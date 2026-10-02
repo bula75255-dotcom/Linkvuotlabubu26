@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Link Vượt & Code KM</title>
+<style>
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+}
+body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+    color: #f8fafc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 30px 16px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+h1 {
+    margin: 0 0 10px;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(90deg, #60a5fa, #a855f7, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: #94a3b8;
+    line-height: 1.5;
+}
+
+/* Tabs */
+.tabs-nav {
+    display: flex;
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 4px;
+    margin-bottom: 16px;
+    gap: 6px;
+}
+.tab-btn {
+    flex: 1;
+    padding: 12px 10px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: #94a3b8;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.tab-btn.active {
+    background: #3b82f6;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+}
+
+.tab-pane {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+}
+.tab-pane.active {
+    display: flex;
+}
+
+/* Item Row */
+.item-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.item-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(96, 165, 250, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+.icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+    flex-shrink: 0;
+}
+.icon.gift {
+    background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+}
+.name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+/* Action Buttons */
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.action-btn {
+    border: 0;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    touch-action: manipulation;
+}
+.copy-btn {
+    background: rgba(255, 255, 255, 0.08);
+    color: #cbd5e1;
+}
+.copy-btn:hover {
+    background: #3b82f6;
+    color: #ffffff;
+}
+.copy-btn.copied {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    color: #ffffff;
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.4);
+}
+.open-btn {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff;
+    box-shadow: 0 3px 8px rgba(37, 99, 235, 0.35);
+}
+.open-btn:hover {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+    transform: scale(1.03);
+}
+.open-btn:active, .copy-btn:active {
+    transform: scale(0.96);
+}
+
+.list {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 16px;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+}
+
+#toast {
+    position: fixed;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%) translateY(20px);
+    opacity: 0;
+    pointer-events: none;
+    padding: 12px 22px;
+    border-radius: 50px;
+    background: #10b981;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+    z-index: 99999;
+    white-space: nowrap;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 20px 10px;
+    }
+    h1 {
+        font-size: 26px;
+    }
+    .list {
+        padding: 10px;
+        border-radius: 18px;
+    }
+    .item-card {
+        padding: 8px 10px;
+    }
+    .icon {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+    .name {
+        font-size: 14px;
+    }
+    .action-btn {
+        padding: 7px 10px;
+        font-size: 11px;
+    }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1 id="title">Link Vượt</h1>
+        <p class="subtitle" id="subtitle">Nhấn MỞ để chuyển trang hoặc COPY để lấy liên kết</p>
+    </div>
+
+    <!-- Thanh chuyển Tab -->
+    <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="tab-vuot">Link Vượt</button>
+        <button class="tab-btn" data-tab="tab-nohu">🎁 Nhận KM Nohu</button>
+    </div>
+
+    <div class="list">
+        <!-- Tab 1: Danh sách Link Vượt -->
+        <div id="tab-vuot" class="tab-pane active">
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">NM</span>
+                    <span class="name">Nmmoo</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://m.mmoo.team/Account/Register?f=394579&app=1">COPY</button>
+                    <a class="action-btn open-btn" href="https://m.mmoo.team/Account/Register?f=394579&app=1" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">TT</span>
+                    <span class="name">TT88</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://m.1tt88.vip/Account/Register?f=3535864&app=1">COPY</button>
+                    <a class="action-btn open-btn" href="https://m.1tt88.vip/Account/Register?f=3535864&app=1" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">GO</span>
+                    <span class="name">GO99</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://m.1go99.vip/Account/Register?f=3528698&app=1">COPY</button>
+                    <a class="action-btn open-btn" href="https://m.1go99.vip/Account/Register?f=3528698&app=1" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">NO</span>
+                    <span class="name">Nohu</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://m.8nohu.vip/Account/Register?f=6344995&app=1">COPY</button>
+                    <a class="action-btn open-btn" href="https://m.8nohu.vip/Account/Register?f=6344995&app=1" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">7P</span>
+                    <span class="name">789P</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://m.789p1.vip/Account/Register?f=784461&app=1">COPY</button>
+                    <a class="action-btn open-btn" href="https://m.789p1.vip/Account/Register?f=784461&app=1" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">ON</span>
+                    <span class="name">ON68</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="http://www.on687.com/?referralCode=pfl9771">COPY</button>
+                    <a class="action-btn open-btn" href="http://www.on687.com/?referralCode=pfl9771" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">F1</span>
+                    <span class="name">F168</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://www.ff1685.tv/?id=868488438">COPY</button>
+                    <a class="action-btn open-btn" href="https://www.ff1685.tv/?id=868488438" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">SC</span>
+                    <span class="name">SC88</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://sc884.vip/?id=368341402">COPY</button>
+                    <a class="action-btn open-btn" href="https://sc884.vip/?id=368341402" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">C1</span>
+                    <span class="name">C168</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://m.c168a8.cc/?id=100060281">COPY</button>
+                    <a class="action-btn open-btn" href="https://m.c168a8.cc/?id=100060281" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">FL</span>
+                    <span class="name">FLY88</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://fly8817.co/?id=915253905">COPY</button>
+                    <a class="action-btn open-btn" href="https://fly8817.co/?id=915253905" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">CM</span>
+                    <span class="name">CM88</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://cm883.cc/?id=216202041">COPY</button>
+                    <a class="action-btn open-btn" href="https://cm883.cc/?id=216202041" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">OK</span>
+                    <span class="name">OK9</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://www.ok991.tv/aff/29556">COPY</button>
+                    <a class="action-btn open-btn" href="https://www.ok991.tv/aff/29556" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">78</span>
+                    <span class="name">78WIN V1</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://d1bc2a6xl4d4in.cloudfront.net/78win.html">COPY</button>
+                    <a class="action-btn open-btn" href="https://d1bc2a6xl4d4in.cloudfront.net/78win.html" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">78</span>
+                    <span class="name">78WIN V2</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://www.239050.com/?af=U9UZ22">COPY</button>
+                    <a class="action-btn open-btn" href="https://www.239050.com/?af=U9UZ22" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">J1</span>
+                    <span class="name">JUN88 V1</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://sasa2.xn--8866-um1g.com/?af=8C4I84">COPY</button>
+                    <a class="action-btn open-btn" href="https://sasa2.xn--8866-um1g.com/?af=8C4I84" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">J2</span>
+                    <span class="name">JUN88 V2</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://www.suifegrnoirkrbk9487845fcjxf9.com/vi-vn/register?refid=partvcbz">COPY</button>
+                    <a class="action-btn open-btn" href="https://www.suifegrnoirkrbk9487845fcjxf9.com/vi-vn/register?refid=partvcbz" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">QQ</span>
+                    <span class="name">QQ88</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://gioithieu.qq881133.com/?referralCode=wtg3307">COPY</button>
+                    <a class="action-btn open-btn" href="https://gioithieu.qq881133.com/?referralCode=wtg3307" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">SH</span>
+                    <span class="name">SHBET</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://m.djifshuie89shjdhsdxbvckrgio.com/?r=LDG3KP">COPY</button>
+                    <a class="action-btn open-btn" href="https://m.djifshuie89shjdhsdxbvckrgio.com/?r=LDG3KP" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">HI</span>
+                    <span class="name">HI88</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://m.www-24h-com-vn-com.com/?r=VDGWXLK">COPY</button>
+                    <a class="action-btn open-btn" href="https://m.www-24h-com-vn-com.com/?r=VDGWXLK" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">F8</span>
+                    <span class="name">F8bet</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://m.jnrfjeigo0ogoibmn5sibptuin.com/?r=DLXV810">COPY</button>
+                    <a class="action-btn open-btn" href="https://m.jnrfjeigo0ogoibmn5sibptuin.com/?r=DLXV810" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">NE</span>
+                    <span class="name">NEW88</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://m.djcvkifr9bmnirhieiyjnrjveg83f.com/?r=W46XWVE">COPY</button>
+                    <a class="action-btn open-btn" href="https://m.djcvkifr9bmnirhieiyjnrjveg83f.com/?r=W46XWVE" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">MB</span>
+                    <span class="name">MB66</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://m.wtyurfuijkxcvklrhyli3imxjuuflegmgkiow3i.com/?r=EOPXDRQ">COPY</button>
+                    <a class="action-btn open-btn" href="https://m.wtyurfuijkxcvklrhyli3imxjuuflegmgkiow3i.com/?r=EOPXDRQ" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">78</span>
+                    <span class="name">789BET</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://m.hsdh99hjsbcnjiufkxuuwvg.com/?r=RJXW9J">COPY</button>
+                    <a class="action-btn open-btn" href="https://m.hsdh99hjsbcnjiufkxuuwvg.com/?r=RJXW9J" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">U8</span>
+                    <span class="name">U888</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://m.u5830.buzz/?r=1RR6GDG&app=1">COPY</button>
+                    <a class="action-btn open-btn" href="https://m.u5830.buzz/?r=1RR6GDG&app=1" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">J8</span>
+                    <span class="name">j88</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://j83.life/Register?&app=1">COPY</button>
+                    <a class="action-btn open-btn" href="https://j83.life/Register?&app=1" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">AB</span>
+                    <span class="name">abc8</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://abc8fc.xyz/?r=1VD8GG&app=1">COPY</button>
+                    <a class="action-btn open-btn" href="https://abc8fc.xyz/?r=1VD8GG&app=1" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">8K</span>
+                    <span class="name">8kbet</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://8k0341q.top/?r=JQRKOO&app1">COPY</button>
+                    <a class="action-btn open-btn" href="https://8k0341q.top/?r=JQRKOO&app1" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">88</span>
+                    <span class="name">88clb</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://88clb2jt.buzz/?app=1">COPY</button>
+                    <a class="action-btn open-btn" href="https://88clb2jt.buzz/?app=1" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">AD</span>
+                    <span class="name">ad88</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://ad88vip8.com/?id=160879698">COPY</button>
+                    <a class="action-btn open-btn" href="https://ad88vip8.com/?id=160879698" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon">XX</span>
+                    <span class="name">xx8</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://vip3xx8.com/?id=868159625">COPY</button>
+                    <a class="action-btn open-btn" href="https://vip3xx8.com/?id=868159625" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Danh sách Link Nhận KM Nohu -->
+        <div id="tab-nohu" class="tab-pane">
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon gift">7P</span>
+                    <span class="name">789P Code</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://789pcode.store/">COPY</button>
+                    <a class="action-btn open-btn" href="https://789pcode.store/" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon gift">MO</span>
+                    <span class="name">MMOO Code</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://mmoocode.shop/">COPY</button>
+                    <a class="action-btn open-btn" href="https://mmoocode.shop/" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon gift">NO</span>
+                    <span class="name">Nohu Code</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://nohucode.pro/">COPY</button>
+                    <a class="action-btn open-btn" href="https://nohucode.pro/" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon gift">GO</span>
+                    <span class="name">GO99 Code</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://go99code.store/">COPY</button>
+                    <a class="action-btn open-btn" href="https://go99code.store/" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+            <div class="item-card">
+                <div class="left">
+                    <span class="icon gift">TT</span>
+                    <span class="name">TT88 Code</span>
+                </div>
+                <div class="actions">
+                    <button class="action-btn copy-btn" data-link="https://tt88code.pro/">COPY</button>
+                    <a class="action-btn open-btn" href="https://tt88code.pro/" target="_blank" rel="noopener noreferrer">MỞ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toast">Đã sao chép liên kết!</div>
+
+<script>
+"use strict";
+
+// Chuyển Tab
+const tabBtns = document.querySelectorAll(".tab-btn");
+const tabPanes = document.querySelectorAll(".tab-pane");
+
+tabBtns.forEach(function(btn) {
+    btn.addEventListener("click", function() {
+        tabBtns.forEach(function(b) { b.classList.remove("active"); });
+        tabPanes.forEach(function(p) { p.classList.remove("active"); });
+
+        btn.classList.add("active");
+        const targetId = btn.getAttribute("data-tab");
+        document.getElementById(targetId).classList.add("active");
+    });
+});
+
+// Chức năng sao chép
+const copyBtns = document.querySelectorAll(".copy-btn");
+const toast = document.getElementById("toast");
+let toastTimer = null;
+
+function showToast(text) {
+    toast.textContent = text;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() {
+        toast.classList.remove("show");
+    }, 1800);
+}
+
+function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "0";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    textarea.setSelectionRange(0, textarea.value.length);
+    let result = false;
+    try {
+        result = document.execCommand("copy");
+    } catch (e) {
+        result = false;
+    }
+    document.body.removeChild(textarea);
+    return result;
+}
+
+async function copyLink(link, button) {
+    let copied = false;
+    try {
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+            await navigator.clipboard.writeText(link);
+            copied = true;
+        } else {
+            copied = fallbackCopy(link);
+        }
+    } catch (e) {
+        copied = fallbackCopy(link);
+    }
+
+    if (copied) {
+        button.classList.add("copied");
+        button.textContent = "✓ ĐÃ CHÉP";
+        showToast("Đã sao chép liên kết!");
+        setTimeout(function() {
+            button.classList.remove("copied");
+            button.textContent = "COPY";
+        }, 1500);
+    } else {
+        showToast("Không thể sao chép!");
+    }
+}
+
+copyBtns.forEach(function(button) {
+    button.addEventListener("click", function() {
+        const link = button.getAttribute("data-link");
+        copyLink(link, button);
+    });
+});
+</script>
+</body>
+</html>
